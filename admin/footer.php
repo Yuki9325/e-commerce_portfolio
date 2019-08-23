@@ -53,24 +53,69 @@
   <!-- edit categories -->
   <script>
     $(".edit-cat").click(function(e){
-      $("#modal-cat-id").val($(this).data('name'));
-      $("#modal-cat-id-2").val($(this).data('id'));
+      var id = $(this).data('id');
+      $.get(
+        'edit.php?id=' + id,
+        function(data) {
+          $("#editCategory").html(data);
+        }
+      )
     })
   </script>
 
   <!-- delete categories -->
   <script>
     $(".delete-cat").click(function(e){
-      $("#modal-cat-id-3").val($(this).data('id'));
+      $("#modal-cat-id-2").val($(this).data('id'));
     })
   </script>
 
-  <!-- delete item -->
+    <!-- edit items -->
+    <script>
+    $(".edit-item").click(function(e){
+      var id = $(this).data('id');
+      $.get(
+        'edit.php?id=' + id,
+        function(data) {
+          $("#editItem").html(data);
+        }
+      )
+    })
+  </script>
+
+  <!-- delete items -->
   <script>
     $(".delete-item").click(function(e){
       $("#modal-item-id").val($(this).data('id'));
     })
   </script>
+
+<!-- edit method of payments -->
+<script>
+  $(".edit-payment").click(function(e){
+    var id = $(this).data('id');
+    $.get(
+      'edit.php?id=' + id,
+      function(data) {
+        $("#editPayment").html(data);
+      }
+    )
+  })
+</script>
+
+<!-- delete method of payments -->
+<script>
+  $(".delete-payment").click(function(e){
+    $("#modal-payment-id-2").val($(this).data('id'));
+  })
+</script>
+
+<!-- cancel order -->
+<script>
+  $(".cancel-order").click(function(e){
+    $("#modal-order-id").val($(this).data('id'));
+  })
+</script>
 
   <!-- Core plugin JavaScript-->
   <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>

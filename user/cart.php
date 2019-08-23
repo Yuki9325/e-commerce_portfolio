@@ -1,437 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Modist - Free Bootstrap 4 Template by Colorlib</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+<?php
+include_once("header.php");
 
-    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="css/animate.css">
-    
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
+require_once "../classes/Shop.php";
+$shop = new Shop;
+$show_cart = $shop->show_cart($_SESSION['id']);
+$delivery_fee = $shop->cal_shipping($_SESSION['id']);
 
-    <link rel="stylesheet" href="css/aos.css">
+?>
 
-    <link rel="stylesheet" href="css/ionicons.min.css">
+<div class="py-4">
+	<div class="container">
+		<div class="row"></div>
+	</div>
+</div>
 
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="css/jquery.timepicker.css">
+<h3 class="mb-5 text-center fuchidori">Cart</h3>
 
-    
-    <link rel="stylesheet" href="css/flaticon.css">
-    <link rel="stylesheet" href="css/icomoon.css">
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
+<div class="container">
+	<table class="table m-0" id="dataTable" width="100%" cellspacing="0">
+		<thead>
+			<tr class="text-center" style="border:solid #ff1aff 3px;">
+				<td colspan="2">Product</td>
+				<td>Price</td>
+				<td>Qty</td>
+				<td>Total</td>
+				<td></td>
+			</tr>
+		</thead>
 
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light ftco-navbar-light-2" id="ftco-navbar">
-	    <div class="container">
-	      <a class="navbar-brand" href="index.html">Modist</a>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-	        <span class="oi oi-menu"></span> Menu
-	      </button>
+		<tbody>
+		<?php
+			if($show_cart == TRUE) {
+			foreach($show_cart as $key => $row){
+		?>
+			<tr class="text-center" style="border:solid #ff1aff 3px;">
+				<td class="text-center">
+					<a style="text-decoration:none;" href="shop-single.php?id=<?php echo $row['item_id']; ?>">
+						<?php echo "<img src='../admin/item/".$row["item_photo"]."' alt='item_photo' width='150' height='150'>"; ?>
+					</a>
+				</td>
+				<td>
+					<?php echo $row['item_name']; ?>
+				</td>
 
-	      <div class="collapse navbar-collapse" id="ftco-nav">
-	        <ul class="navbar-nav ml-auto">
-	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-	          <li class="nav-item dropdown active">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-              	<a class="dropdown-item" href="shop.html">Shop</a>
-                <a class="dropdown-item" href="product-single.html">Single Product</a>
-                <a class="dropdown-item" href="cart.html">Cart</a>
-                <a class="dropdown-item" href="checkout.html">Checkout</a>
-              </div>
-            </li>
-	          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-	          <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-	          <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-	          <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+				<td><?php echo '¥ '.number_format($row['item_price']); ?></td>
 
-	        </ul>
-	      </div>
-	    </div>
-	  </nav>
-    <!-- END nav -->
-		
-		<div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
-      <div class="container">
-        <div class="row no-gutters slider-text align-items-center justify-content-center">
-          <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-0 bread">My Cart</h1>
-            <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
-          </div>
-        </div>
-      </div>
-    </div>
-		
-		<section class="ftco-section ftco-cart">
-			<div class="container">
-				<div class="row">
-    			<div class="col-md-12 ftco-animate">
-    				<div class="cart-list">
-	    				<table class="table">
-						    <thead class="thead-primary">
-						      <tr class="text-center">
-						        <th>&nbsp;</th>
-						        <th>&nbsp;</th>
-						        <th>Product</th>
-						        <th>Price</th>
-						        <th>Quantity</th>
-						        <th>Total</th>
-						      </tr>
-						    </thead>
-						    <tbody>
-						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-						        
-						        <td class="image-prod"><div class="img" style="background-image:url(images/product-3.jpg);"></div></td>
-						        
-						        <td class="product-name">
-						        	<h3>Young Woman Wearing Dress</h3>
-						        	<p>Far far away, behind the word mountains, far from the countries</p>
-						        </td>
-						        
-						        <td class="price">$4.90</td>
-						        
-						        <td class="quantity">
-						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-					          	</div>
-					          </td>
-						        
-						        <td class="total">$4.90</td>
-						      </tr><!-- END TR-->
+				<td>
+				<select name="item_qty" class="form-control cartitem_qty" data-id="<?php echo $row['cartitem_id'];?>"">
+						<?php
+							for($count = 1; $count <= $row['item_qty']; $count++){
+						?>
+						<option value="<?php echo $count; ?>"
+							<?php if($count == $row['cartitem_qty']) echo "selected"; ?>>
+							<?php echo $count; ?>
+						</option>
+						<?php
+							}
+						?>
+				</select>
+				<input type="hidden" class="item_id_<?php echo $row['cartitem_id']; ?>" value="<?php echo $row['item_id']; ?>">
+				<input type="hidden" class="cartitem_id_<?php echo $row['cartitem_id']; ?>" value="<?php echo $row['cartitem_id']; ?>">
+				</td>
 
-						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-						        
-						        <td class="image-prod"><div class="img" style="background-image:url(images/product-4.jpg);"></div></td>
-						        
-						        <td class="product-name">
-						        	<h3>Young Woman Wearing Dress</h3>
-						        	<p>Far far away, behind the word mountains, far from the countries</p>
-						        </td>
-						        
-						        <td class="price">$15.70</td>
-						        
-						        <td class="quantity">
-						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-					          	</div>
-					          </td>
-						        
-						        <td class="total">$15.70</td>
-						      </tr><!-- END TR-->
-						    </tbody>
-						  </table>
-					  </div>
-    			</div>
-    		</div>
-    		<div class="row justify-content-end">
-    			<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
-    				<div class="cart-total mb-3">
-    					<h3>Cart Totals</h3>
-    					<p class="d-flex">
-    						<span>Subtotal</span>
-    						<span>$20.60</span>
-    					</p>
-    					<p class="d-flex">
-    						<span>Delivery</span>
-    						<span>$0.00</span>
-    					</p>
-    					<p class="d-flex">
-    						<span>Discount</span>
-    						<span>$3.00</span>
-    					</p>
-    					<hr>
-    					<p class="d-flex total-price">
-    						<span>Total</span>
-    						<span>$17.60</span>
-    					</p>
-    				</div>
-    				<p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
-    			</div>
-    		</div>
+				<td><?php echo '¥ '.number_format($row['cartitem_price']); ?></td>
+
+				<td>
+					<form action="action.php?action=DELETE_CART&id=<?php echo $row['item_id']; ?>" method="POST">
+						<button type="submit" name="delete_cart" class="btn btn-block text-dark"><i class="fa fa-times" aria-hidden="true"></i></button>
+					</form>
+				</td>
+			</tr>
+		<?php
+			}
+		?>
+		</tbody>
+	</table>
+
+	<div class="row justify-content-end">
+		<div class="card col-md-6 mt-5 mr-3" style="background:#e0e0eb; border:solid #ff1aff 3px;">
+			<div class="text-right">
+				<div class="cart-total my-3">
+					<h3 class="text-center mb-5">Cart Totals</h3>
+					<p class="">
+						<span class="col-md-6" style="font-size:20px;">Subtotal</span>
+						<span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($cartitem_price); ?></span>
+					</p>
+					<p class="">
+						<span class="col-md-6" style="font-size:20px;">Delivery</span>
+						<span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($delivery_fee); ?></span>
+					</p>
+					<hr class="background-color:#ff1aff;">
+					<p class="">
+						<span class="col-md-6" style="font-size:20px;">Total</span>
+						<span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($cartitem_price+$delivery_fee); ?></span>
+					</p>
+				</div>
+					<a href="checkout.php" name="proceed_order" class="form-control btn btn-block text-dark mb-3" style="border-radius:50px; border-color:#ff1aff; background-color:#e0e0eb;">
+						Proceed to Checkout
+					</a>
 			</div>
-		</section>
+		</div>
+	</div>
+	<?php
+	} else {
+		echo "<tbody><tr><td colspan='6' class='text-center' style='border:solid #ff1aff 3px; font-size:50px;'>No Item Inside the Cart<br><i class='fa fa-frown-o' aria-hidden='true'></i></td></tr></tbody></table>";
+	}
+	?>
+</div>
 
-    <section class="ftco-section bg-light">
-    	<div class="container">
-				<div class="row justify-content-center mb-3 pb-3">
-          <div class="col-md-12 heading-section text-center ftco-animate">
-          	<h1 class="big">Products</h1>
-            <h2 class="mb-4">Related Products</h2>
-          </div>
-        </div>    		
-    	</div>
-    	<div class="container-fluid">
-    		<div class="row">
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-1.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-2.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-3.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-4.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
-    </section>
+<div class="py-4">
+	<div class="container">
+		<div class="row"></div>
+	</div>
+</div>
 
-		<section class="ftco-section-parallax">
-      <div class="parallax-img d-flex align-items-center">
-        <div class="container">
-          <div class="row d-flex justify-content-center py-5">
-            <div class="col-md-7 text-center heading-section ftco-animate">
-            	<h1 class="big">Subscribe</h1>
-              <h2>Subcribe to our Newsletter</h2>
-              <div class="row d-flex justify-content-center mt-5">
-                <div class="col-md-8">
-                  <form action="#" class="subscribe-form">
-                    <div class="form-group d-flex">
-                      <input type="text" class="form-control" placeholder="Enter email address">
-                      <input type="submit" value="Subscribe" class="submit px-3">
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="ftco-footer bg-light ftco-section">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col-md">
-            <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">Modist</h2>
-              <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
-                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="ftco-footer-widget mb-4 ml-md-5">
-              <h2 class="ftco-heading-2">Menu</h2>
-              <ul class="list-unstyled">
-                <li><a href="#" class="py-2 d-block">Shop</a></li>
-                <li><a href="#" class="py-2 d-block">About</a></li>
-                <li><a href="#" class="py-2 d-block">Journal</a></li>
-                <li><a href="#" class="py-2 d-block">Contact Us</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-4">
-             <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">Help</h2>
-              <div class="d-flex">
-	              <ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
-	                <li><a href="#" class="py-2 d-block">Shipping Information</a></li>
-	                <li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
-	                <li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
-	                <li><a href="#" class="py-2 d-block">Privacy Policy</a></li>
-	              </ul>
-	              <ul class="list-unstyled">
-	                <li><a href="#" class="py-2 d-block">FAQs</a></li>
-	                <li><a href="#" class="py-2 d-block">Contact</a></li>
-	              </ul>
-	            </div>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="ftco-footer-widget mb-4">
-            	<h2 class="ftco-heading-2">Have a Questions?</h2>
-            	<div class="block-23 mb-3">
-	              <ul>
-	                <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View, San Francisco, California, USA</span></li>
-	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929 210</span></a></li>
-	                <li><a href="#"><span class="icon icon-envelope"></span><span class="text">info@yourdomain.com</span></a></li>
-	              </ul>
-	            </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 text-center">
-
-            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-						  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart color-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-						  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-						</p>
-          </div>
-        </div>
-      </div>
-    </footer>
-    
-  
-
-  <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
-
-
-  <script src="js/jquery.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery.easing.1.3.js"></script>
-  <script src="js/jquery.waypoints.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/jquery.animateNumber.min.js"></script>
-  <script src="js/bootstrap-datepicker.js"></script>
-  <script src="js/scrollax.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-  <script src="js/google-map.js"></script>
-  <script src="js/main.js"></script>
-
-  <script>
-		$(document).ready(function(){
-
-		var quantitiy=0;
-		   $('.quantity-right-plus').click(function(e){
-		        
-		        // Stop acting like a button
-		        e.preventDefault();
-		        // Get the field name
-		        var quantity = parseInt($('#quantity').val());
-		        
-		        // If is not undefined
-		            
-		            $('#quantity').val(quantity + 1);
-
-		          
-		            // Increment
-		        
-		    });
-
-		     $('.quantity-left-minus').click(function(e){
-		        // Stop acting like a button
-		        e.preventDefault();
-		        // Get the field name
-		        var quantity = parseInt($('#quantity').val());
-		        
-		        // If is not undefined
-		      
-		            // Increment
-		            if(quantity>0){
-		            $('#quantity').val(quantity - 1);
-		            }
-		    });
-		    
-		});
-	</script>
-    
-  </body>
-</html>
+<?php include_once ('footer.php');?>

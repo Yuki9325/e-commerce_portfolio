@@ -21,8 +21,32 @@ class Category extends Config {
         $this->conn->close();
     }
 
+    public function show_one($id) {
+        $sql = "SELECT * FROM categories WHERE category_id = '$id'";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
+    public function add($cat_name) {
+        $sql = "SELECT * FROM categories WHERE cat_name = '$cat_name' AND cat_status != 'D'";
+        $result = $this->conn->query($sql);
+
+        if($result->num_rows == 0) {
+            $sql = "INSERT INTO categories (cat_name) VALUES ('$cat_name')";
+            $result = $this->conn->query($sql);
+
+            if($result == TRUE) {
+                $this->redirect("list.php");
+            }
+        } else {
+            echo "this category already exist.";
+        }
+        $this->conn->close();
+    }
+
     public function edit($cat_name, $id) {
-        $sql = "SELECT * FROM categories WHERE cat_name = '$cat_name'";
+        $sql = "SELECT * FROM categories WHERE cat_name = '$cat_name' AND cat_status != 'D'";
         $result = $this->conn->query($sql);
 
         if($result->num_rows == 0) {
@@ -33,7 +57,7 @@ class Category extends Config {
                 $this->redirect("list.php");
             }
         } else {
-            echo "this name already exist.";
+            echo "this category already exist.";
         }
         $this->conn->close();
     }

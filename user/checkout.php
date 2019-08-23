@@ -1,497 +1,205 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Modist - Free Bootstrap 4 Template by Colorlib</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+<?php
+include_once("header.php");
 
-    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="css/animate.css">
-    
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
+$address = $user->show_address($_SESSION['id']);
 
-    <link rel="stylesheet" href="css/aos.css">
+require_once "../classes/Shop.php";
+$shop = new Shop;
+$show_cart = $shop->show_cart($_SESSION['id']);
+$delivery_fee = $shop->cal_shipping($_SESSION['id']);
+?>
+<div class="py-4">
+  <div class="container">
+    <div class="row"></div>
+  </div>
+</div>
 
-    <link rel="stylesheet" href="css/ionicons.min.css">
+<form action="action.php?action=CHECKOUT&ua_id=<?php echo $address['ua_id'];?>&cart_id=<?php echo $show_cart[0]['cart_id'];?>" method="POST">
+<div class="container">
+  <div class="row">
+            <div class="col-md-6 mb-5 mb-md-0">
+              <h3 class="mb-3 text-black fuchidori">Billing Details</h3>
+              <div class="p-3 p-lg-5 border" style="border-radius:5%;">
 
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="css/jquery.timepicker.css">
-
-    
-    <link rel="stylesheet" href="css/flaticon.css">
-    <link rel="stylesheet" href="css/icomoon.css">
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light ftco-navbar-light-2" id="ftco-navbar">
-	    <div class="container">
-	      <a class="navbar-brand" href="index.html">Modist</a>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-	        <span class="oi oi-menu"></span> Menu
-	      </button>
-
-	      <div class="collapse navbar-collapse" id="ftco-nav">
-	        <ul class="navbar-nav ml-auto">
-	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-	          <li class="nav-item dropdown active">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-              	<a class="dropdown-item" href="shop.html">Shop</a>
-                <a class="dropdown-item" href="product-single.html">Single Product</a>
-                <a class="dropdown-item" href="cart.html">Cart</a>
-                <a class="dropdown-item" href="checkout.html">Checkout</a>
+                <table class="table table-bordered" style="border-color:#ff1aff;">
+                <tr>
+                    <th style="font-size:25px;">First Name</th>
+                    <td style="font-size:20px;"><?php echo $row['first_name']; ?></td>
+                </tr>
+                <tr>
+                    <th style="font-size:25px;">Last Name</th>
+                    <td style="font-size:20px;"><?php echo $row['last_name']; ?></td>
+                </tr>
+                <tr>
+                    <th style="font-size:25px;">Address</th>
+                    <td style="font-size:20px;"><?php echo $address['ua_address']; ?></td>
+                </tr>
+                <tr>
+                    <th style="font-size:25px;">Prefecture</th>
+                    <td style="font-size:20px;"><?php echo $address['ua_prefecture']; ?></td>
+                </tr>
+                <tr>
+                    <th style="font-size:25px;">Delivery Area</th>
+                    <td style="font-size:20px;"><?php echo $address['ua_area']; ?></td>
+                </tr>
+                <tr>
+                    <th style="font-size:25px;">Zip Code</th>
+                    <td style="font-size:20px;"><?php echo $address['ua_zip']; ?></td>
+                </tr>
+                <tr>
+                    <th style="font-size:25px;">Phone number</th>
+                    <td style="font-size:20px;"><?php echo $address['ua_phone_number']; ?></td>
+                </tr>
+                </table>
+                <div class="form-group">
+                    <a href="profile.php" class="btn btn-lg btn-block text-dark" name="checkout" style="border-radius:50px; border-color:#ff1aff;">
+                      Edit Address
+                    </a>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-lg btn-block text-dark" name="checkout" style="border-radius:50px; border-color:#ff1aff;">
+                      Ship to Different Address
+                    </button>
+                </div>
               </div>
-            </li>
-	          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-	          <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-	          <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-	          <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+            </div>
 
-	        </ul>
-	      </div>
-	    </div>
-	  </nav>
-    <!-- END nav -->
-		
-		<div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
-      <div class="container">
-        <div class="row no-gutters slider-text align-items-center justify-content-center">
-          <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-0 bread">Checkout</h1>
-            <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Checkout</span></p>
-          </div>
-        </div>
-      </div>
-    </div>
-		
-		<section class="ftco-section">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-xl-8 ftco-animate">
-						<form action="#" class="billing-form bg-light p-3 p-md-5">
-							<h3 class="mb-4 billing-heading">Billing Details</h3>
-	          	<div class="row align-items-end">
-	          		<div class="col-md-6">
-	                <div class="form-group">
-	                	<label for="firstname">Firt Name</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-	              </div>
-	              <div class="col-md-6">
-	                <div class="form-group">
-	                	<label for="lastname">Last Name</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-                </div>
-                <div class="w-100"></div>
-		            <div class="col-md-12">
-		            	<div class="form-group">
-		            		<label for="country">State / Country</label>
-		            		<div class="select-wrap">
-		                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-		                  <select name="" id="" class="form-control">
-		                  	<option value="">France</option>
-		                    <option value="">Italy</option>
-		                    <option value="">Philippines</option>
-		                    <option value="">South Korea</option>
-		                    <option value="">Hongkong</option>
-		                    <option value="">Japan</option>
-		                  </select>
-		                </div>
-		            	</div>
-		            </div>
-		            <div class="w-100"></div>
-		            <div class="col-md-6">
-		            	<div class="form-group">
-	                	<label for="streetaddress">Street Address</label>
-	                  <input type="text" class="form-control" placeholder="House number and street name">
-	                </div>
-		            </div>
-		            <div class="col-md-6">
-		            	<div class="form-group">
-	                  <input type="text" class="form-control" placeholder="Appartment, suite, unit etc: (optional)">
-	                </div>
-		            </div>
-		            <div class="w-100"></div>
-		            <div class="col-md-6">
-		            	<div class="form-group">
-	                	<label for="towncity">Town / City</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-		            </div>
-		            <div class="col-md-6">
-		            	<div class="form-group">
-		            		<label for="postcodezip">Postcode / ZIP *</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-		            </div>
-		            <div class="w-100"></div>
-		            <div class="col-md-6">
-	                <div class="form-group">
-	                	<label for="phone">Phone</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-	              </div>
-	              <div class="col-md-6">
-	                <div class="form-group">
-	                	<label for="emailaddress">Email Address</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-                </div>
-                <div class="w-100"></div>
+            <div class="col-md-6">
+              
+              <div class="row mb-5">
                 <div class="col-md-12">
-                	<div class="form-group mt-4">
-										<div class="radio">
-										  <label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>
-										  <label><input type="radio" name="optradio"> Ship to different address</label>
-										</div>
-									</div>
-                </div>
-	            </div>
-	          </form><!-- END -->
-
-
-
-	          <div class="row mt-5 pt-3 d-flex">
-	          	<div class="col-md-6 d-flex">
-	          		<div class="cart-detail cart-total bg-light p-3 p-md-4">
-	          			<h3 class="billing-heading mb-4">Cart Total</h3>
-	          			<p class="d-flex">
-		    						<span>Subtotal</span>
-		    						<span>$20.60</span>
-		    					</p>
-		    					<p class="d-flex">
-		    						<span>Delivery</span>
-		    						<span>$0.00</span>
-		    					</p>
-		    					<p class="d-flex">
-		    						<span>Discount</span>
-		    						<span>$3.00</span>
-		    					</p>
-		    					<hr>
-		    					<p class="d-flex total-price">
-		    						<span>Total</span>
-		    						<span>$17.60</span>
-		    					</p>
-								</div>
-	          	</div>
-	          	<div class="col-md-6">
-	          		<div class="cart-detail bg-light p-3 p-md-4">
-	          			<h3 class="billing-heading mb-4">Payment Method</h3>
-									<div class="form-group">
-										<div class="col-md-12">
-											<div class="radio">
-											   <label><input type="radio" name="optradio" class="mr-2"> Direct Bank Tranfer</label>
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-md-12">
-											<div class="radio">
-											   <label><input type="radio" name="optradio" class="mr-2"> Check Payment</label>
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-md-12">
-											<div class="radio">
-											   <label><input type="radio" name="optradio" class="mr-2"> Paypal</label>
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-md-12">
-											<div class="checkbox">
-											   <label><input type="checkbox" value="" class="mr-2"> I have read and accept the terms and conditions</label>
-											</div>
-										</div>
-									</div>
-									<p><a href="#"class="btn btn-primary py-3 px-4">Place an order</a></p>
-								</div>
-	          	</div>
-	          </div>
-          </div> <!-- .col-md-8 -->
-        </div>
-      </div>
-    </section> <!-- .section -->
-
-    <section class="ftco-section bg-light">
-    	<div class="container">
-				<div class="row justify-content-center mb-3 pb-3">
-          <div class="col-md-12 heading-section text-center ftco-animate">
-          	<h1 class="big">Products</h1>
-            <h2 class="mb-4">Related Products</h2>
-          </div>
-        </div>    		
-    	</div>
-    	<div class="container-fluid">
-    		<div class="row">
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-1.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-2.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-3.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-4.jpg" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
-    </section>
-
-		<section class="ftco-section-parallax">
-      <div class="parallax-img d-flex align-items-center">
-        <div class="container">
-          <div class="row d-flex justify-content-center py-5">
-            <div class="col-md-7 text-center heading-section ftco-animate">
-            	<h1 class="big">Subscribe</h1>
-              <h2>Subcribe to our Newsletter</h2>
-              <div class="row d-flex justify-content-center mt-5">
-                <div class="col-md-8">
-                  <form action="#" class="subscribe-form">
-                    <div class="form-group d-flex">
-                      <input type="text" class="form-control" placeholder="Enter email address">
-                      <input type="submit" value="Subscribe" class="submit px-3">
+                  <h2 class="h3 mb-3 text-black fuchidori">Your Order & Payment</h2>
+                  <div class="p-3 p-lg-5 border" style="border-radius:5%;">
+                    <div class="card mb-5" style="background:#e0e0eb; border:solid #ff1aff 3px;">
+                      <div class="text-right">
+                        <div class="cart-total my-3 b-3">
+                          <h3 class="text-center mb-3">Cart Totals</h3>
+                          <p class="">
+                          <?php
+                            if($show_cart == TRUE) {
+                          ?>
+                            <span class="col-md-6" style="font-size:20px;">Subtotal</span>
+                            <span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($cartitem_price); ?></span>
+                          </p>
+                          <p class="">
+                            <span class="col-md-6" style="font-size:20px;">Delivery</span>
+                            <span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($delivery_fee); ?></span>
+                          </p>
+                          <hr class="" style="border-color:#ff1aff;">
+                          <p class="">
+                            <span class="col-md-6" style="font-size:20px;">Total</span>
+                            <span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($cartitem_price+$delivery_fee); ?></span>
+                            <input type="hidden" name="cartitem_price" value="<?php echo ($cartitem_price+$delivery_fee); ?>">
+                          </p>
+                          <?php
+                          }
+                          ?>
+                        </div>
+                      </div>
                     </div>
-                  </form>
+
+                    <div class="border p-3 mb-3">
+                        <a class="d-block text-dark" style="text-decoration:none; font-size:25px;" data-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">
+                          Bank Transfer
+                        </a>
+                      <div class="collapse" id="collapsebank">
+                        <div class="pt-4">
+                        <p style="display:inline-block; font-size:20px;">
+                          <input type="radio" name="payment_id" value="2" required> Choose Bank Transfer
+                        </p>
+                          <p class="mb-0">Will send our bank account information by email once you place an order.</p><br>
+                          <p class="text-danger">All bank charges must be paid by the customer.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="border p-3 mb-3">
+                        <a class="d-block text-dark" style="text-decoration:none; font-size:25px;" data-toggle="collapse" href="#collapsecheque" role="button" aria-expanded="false" aria-controls="collapsecheque">
+                          Credit Card
+                        </a>
+                      <div class="collapse" id="collapsecheque">
+                        <div class="py-4">
+                        <p style="display:inline-block; font-size:20px;">
+                          <input type="radio" name="payment_id" value="4" required> Choose Credit Card
+                        </p>
+                          <div class="form-group row">
+                            <div class="col-md-6">
+                              <label class="text-black">First Name <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control" name="credit_f_name">
+                            </div>
+                            <div class="col-md-6">
+                              <label class="text-black">Last Name <span class="text-danger">*</span></label>
+                              <input type="text" class="form-control"  name="credit_l_name">
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <div class="col-md-12">
+                              <label class="text-black">Card Number<span class="text-danger">*</span></label>
+                              <input type="text" class="form-control" name="credit_c_number">
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <div class="col-md-6">
+                              <label class="text-black">Expiration Month<span class="text-danger">*</span></label>
+                                <select class="form-control" name="credit_exp_month">
+                                  <?php
+                                    $thisMonth = date('m');
+
+                                    for ($i=1; $i <= 12; $i++) {
+                                      if ($i==$thisMonth) {
+                                          echo "<option value={$i} selected>{$i}</option>", "\n";
+                                      } else {
+                                         echo "<option value={$i}>{$i}</option>", "\n";
+                                         }
+                                      }
+                                  ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                              <label class="text-black">Expiration Year<span class="text-danger">*</span></label>
+                                <select class="form-control" name="credit_exp_year">
+                                  <?php
+                                    $thisYear = date('Y');
+                                    $endYear = $thisYear + 21;
+
+                                    for($i=$thisYear; $i <= $endYear; $i++) {
+                                        if ($i==$thisYear) {
+                                          echo "<option value={$i} selected>{$i}</option>" , "\n";
+                                              } else {
+                                          echo "<option value={$i}>{$i}</option>" , "\n";
+                                              }
+                                    }    
+                                  ?>
+                                </select>
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <div class="col-md-6">
+                              <label for="c_diff_fname" class="text-black">Security Number<span class="text-danger">*</span></label>
+                              <input type="text" class="form-control" name="credit_security">
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="mt-5 btn btn-lg btn-block text-dark" name="checkout" style="border-radius:50px; border-color:#ff1aff;">
+                          Place Order
+                        </button>
+                      </form>
+                    </div>
+
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="ftco-footer bg-light ftco-section">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col-md">
-            <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">Modist</h2>
-              <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
-                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="ftco-footer-widget mb-4 ml-md-5">
-              <h2 class="ftco-heading-2">Menu</h2>
-              <ul class="list-unstyled">
-                <li><a href="#" class="py-2 d-block">Shop</a></li>
-                <li><a href="#" class="py-2 d-block">About</a></li>
-                <li><a href="#" class="py-2 d-block">Journal</a></li>
-                <li><a href="#" class="py-2 d-block">Contact Us</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-4">
-             <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">Help</h2>
-              <div class="d-flex">
-	              <ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
-	                <li><a href="#" class="py-2 d-block">Shipping Information</a></li>
-	                <li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
-	                <li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
-	                <li><a href="#" class="py-2 d-block">Privacy Policy</a></li>
-	              </ul>
-	              <ul class="list-unstyled">
-	                <li><a href="#" class="py-2 d-block">FAQs</a></li>
-	                <li><a href="#" class="py-2 d-block">Contact</a></li>
-	              </ul>
-	            </div>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="ftco-footer-widget mb-4">
-            	<h2 class="ftco-heading-2">Have a Questions?</h2>
-            	<div class="block-23 mb-3">
-	              <ul>
-	                <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View, San Francisco, California, USA</span></li>
-	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929 210</span></a></li>
-	                <li><a href="#"><span class="icon icon-envelope"></span><span class="text">info@yourdomain.com</span></a></li>
-	              </ul>
-	            </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 text-center">
-
-            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-						  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart color-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-						  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-						</p>
-          </div>
-        </div>
-      </div>
-    </footer>
-    
-  
-
-  <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
-
-
-  <script src="js/jquery.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery.easing.1.3.js"></script>
-  <script src="js/jquery.waypoints.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/jquery.animateNumber.min.js"></script>
-  <script src="js/bootstrap-datepicker.js"></script>
-  <script src="js/scrollax.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-  <script src="js/google-map.js"></script>
-  <script src="js/main.js"></script>
-
-  <script>
-		$(document).ready(function(){
-
-		var quantitiy=0;
-		   $('.quantity-right-plus').click(function(e){
-		        
-		        // Stop acting like a button
-		        e.preventDefault();
-		        // Get the field name
-		        var quantity = parseInt($('#quantity').val());
-		        
-		        // If is not undefined
-		            
-		            $('#quantity').val(quantity + 1);
-
-		          
-		            // Increment
-		        
-		    });
-
-		     $('.quantity-left-minus').click(function(e){
-		        // Stop acting like a button
-		        e.preventDefault();
-		        // Get the field name
-		        var quantity = parseInt($('#quantity').val());
-		        
-		        // If is not undefined
-		      
-		            // Increment
-		            if(quantity>0){
-		            $('#quantity').val(quantity - 1);
-		            }
-		    });
-		    
-		});
-	</script>
-    
-  </body>
-</html>
+</div>
+<?php
+include_once("footer.php");
+?>

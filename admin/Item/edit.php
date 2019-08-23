@@ -1,57 +1,53 @@
-<?php include_once ("../header.php"); ?>
+<?php
+$id = $_GET['id'];
+require_once "../../classes/Item.php";
+$item = new Item;
+$row = $item->show_one($id);
 
-<form action="" method="POST" enctype="multipart/form-data">
-        <div class="py-4 mb-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3 mr-auto">
-                        <a href="posts_table.php" class="btn btn-block border border-dark text-dark" style="text-decoration:none;">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>  Back To Item List
-                        </a>
-                    </div>
+require_once "../../classes/Category.php";
+$category = new Category;
 
-                    <div class="col-md-3">
-                        <button type="submit" value="save" name="save" class="btn btn-success btn-block text-white">
-                            <i class="fa fa-check" aria-hidden="true"></i>  Save Changes
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+?>
 
-        <div class="container">
-                <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-header m-0"><h4>Edit Item</h4></div>
-                            <div class="card-block">
-                                <div class="form-group">
-                                        <label for="">Name</label>
-                                        <input type="text" name="title" class="form-control" value="<?php echo $get_post_info['item_name']; ?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="">Category</label>
-                                    <select name="category" class="form-control" value="<?php echo $get_post_info['cat_name']; ?>">
-                                        <?php
-                                        foreach ($c_list as $key => $values){
-                                            echo "<option value ='".$values['category_id']."'>".$values['cat_name']."</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
+<div class="modal-body">
+<input type="hidden" name="item_id" value="<?php echo $id; ?>">
+    <label for="">Name</label>
+        <input type="text" name="item_name" class="form-control" value="<?php echo $row['item_name']; ?>"><br>
 
-                                <div class="form-group p-3" style="background-color:lightgray;">
-                                    <label for="">Image Upload</label><br>
-                                    <input type="file" name="post_photo">
-                                </div>
+        <label for="">Price</label>
+        <input type="text" name="item_price" class="form-control" value="<?php echo $row['item_price']; ?>"><br>
 
-                                <div class="form-group">
-                                    <label for="">Description</label><br>
-                                    <textarea name="comment" id="" cols="80" rows="3" class="form-control"><?php echo $get_post_info['post_comment']; ?></textarea>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-        </div>
-    </form>
+        <label for="">Stock</label>
+        <input type="text" name="item_qty" class="form-control" value="<?php echo $row['item_qty']; ?>"><br>
 
-<?php include_once ("../footer.php"); ?>
+    <label for="">Category</label>
+        <select name="category_id" class="form-control">
+            <?php
+                $show_cat = $category->show_all();
+                foreach ($show_cat as $key => $value) {
+            ?>
+            <option value="<?php echo $value['category_id']; ?>"
+                <?php if($row['category_id'] == $value['category_id']) echo "selected"; ?>>
+                <?php echo $value['cat_name']; ?>
+            </option>
+            <?php
+                }
+            ?>
+        </select><br>
+
+    <div class="form-group">
+        <label for="">Description</label><br>
+        <textarea name="item_description" id="" cols="80" rows="3" class="form-control"><?php echo $row['item_description']; ?></textarea>
+    </div><br>
+
+    <div class="form-group p-3" style="background-color:lightgray;">
+        <label for="">Image Upload</label><br>
+        <input type="file" name="item_photo">
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" name="cancel" class="btn btn-default border" style="font-size:20px;"
+        data-dismiss="modal">Cancel</button>
+    <button type="submit" name="edit" class="btn btn-secondary" style="font-size:20px;">Change</button>
+</div>

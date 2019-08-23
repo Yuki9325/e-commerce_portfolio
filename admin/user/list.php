@@ -9,7 +9,7 @@ include_once ("../header.php");
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h4 class="m-0 font-weight-bold text-center">User Table</h6>
+    <h4 class="m-0 font-weight-bold text-center">Members List</h6>
   </div>
   <div class="card-body">
     <div class="table-responsive">
@@ -18,6 +18,7 @@ include_once ("../header.php");
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Phone Number</th>
             <th></th>
           </tr>
         </thead>
@@ -25,18 +26,20 @@ include_once ("../header.php");
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Phone Number</th>
             <th></th>
           </tr>
         </tfoot>
         <tbody>
           <?php
-          $get_users = $user->show_all();
-            if($get_users == TRUE) {
-              foreach($get_users as $key => $row){
+          $show_users = $user->show_all();
+            if($show_users == TRUE) {
+              foreach($show_users as $key => $row){
           ?>
           <tr>
             <td><?php echo $row['first_name']." ".$row['last_name']; ?></td>
             <td><?php echo $row['email']; ?></td>
+            <td><?php echo $row['ua_phone_number']; ?></td>
             <td class="text-center">
               <button type="button" class="btn btn-danger text-white delete-user" data-toggle="modal" data-target="#userDeleteModal" data-id="<?php echo $row['user_id']; ?>">
                 Delete
@@ -46,7 +49,7 @@ include_once ("../header.php");
           <?php
               }
           } else {
-            echo "<td colspan='3' class='text-center'>No User</td>";
+            echo "<td colspan='5' class='text-center'>No User</td>";
           }
           ?>
         </tbody>
@@ -55,7 +58,6 @@ include_once ("../header.php");
   </div>
 </div>
 
-</div>
 <!-- /.container-fluid -->
 
       <div class="modal fade" id="userDeleteModal">
