@@ -4,10 +4,23 @@ $_SESSION['user'];
 
 require_once("../classes/User.php");
 $user = new User;
+$count_user = $user->count_user();
 
-// $member = $user->count();
-// $stock = $user->count();
-// $soldout = $user->count();
+require_once("../classes/Item.php");
+$item = new Item;
+$instock_item = $item->count_instock_item();
+$outofstock_item = $item->count_outofstock_item();
+
+require_once("../classes/Order.php");
+$order = new Order;
+$waiting_for_payemnt = $order->count_waiting_for_payment();
+$received_payment = $order->count_received_payment();
+$in_transit = $order->count_in_transit();
+$waiting_for_receiving = $order->count_waiting_for_receiving();
+$request_for_return = $order->count_request_for_return();
+$waiting_for_return = $order->count_waiting_for_return();
+$count_returning = $order->count_returning();
+$count_no_item_received = $order->count_no_item_received();
 
 ?>
 
@@ -43,12 +56,12 @@ $user = new User;
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <span class="sidebar-brand d-flex align-items-center justify-content-center text-white">
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>
         <div class="sidebar-brand-text mx-3">ADMIN PAGE</div>
-      </a>
+      </span>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -62,26 +75,6 @@ $user = new User;
 
       <!-- Divider -->
       <hr class="sidebar-divider">
-
-      <!-- Nav Item - Pages Collapse Menu -->
-      <!-- <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="404.html">404 Page</a>
-            <a class="collapse-item" href="blank.html">Blank Page</a>
-          </div>
-        </div>
-      </li> -->
 
       <!-- Nav Item - Tables -->
       <li class="nav-item">
@@ -222,45 +215,45 @@ $user = new User;
 
                 <div class="card-body p-0">
                     <div class="d-block border border-top-0 border-left-0 border-right-0">
-                      <a href="https://site4.ec-cube.net/admin/order?order_status_id=1" class="p-3 d-block">
+                      <div class="p-3 d-block">
                           <div class="row align-items-center">
                             <div class="col-2 align-middle text-center"><i class="fa fa-users fa-2x text-secondary" aria-hidden="true"></i></div>
                               <div class="col align-middle">
                                   <span class="align-middle">Number of Members</span>
                               </div>
                               <div class="col-auto text-right align-middle">
-                                  <span class="h4 align-middle font-weight-normal text-dark"></span>
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $count_user['users']; ?></span>
                               </div>
                           </div>
-                      </a>
+                      </div>
                     </div>
 
                     <div class="d-block border border-top-0 border-left-0 border-right-0">
-                      <a href="https://site4.ec-cube.net/admin/order?order_status_id=6" class="p-3 d-block">
+                      <div class="p-3 d-block">
                           <div class="row align-items-center">
                             <div class="col-2 align-middle text-center"><i class="fa fa-cubes fa-2x text-secondary" aria-hidden="true"></i></div>
                               <div class="col align-middle">
                                   <span class="align-middle">In Stock Items</span>
                               </div>
                               <div class="col-auto text-right align-middle">
-                                  <span class="h4 align-middle font-weight-normal text-dark">60</span>
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $instock_item['items']; ?></span>
                               </div>
                           </div>
-                      </a>
+                      </div>
                     </div>
 
                     <div class="d-block border border-top-0 border-left-0 border-right-0">
-                      <a href="https://site4.ec-cube.net/admin/order?order_status_id=6" class="p-3 d-block">
+                      <div class="p-3 d-block">
                         <div class="row align-items-center">
                           <div class="col-2 align-middle text-center"><i class="fa fa-inbox fa-2x text-secondary" aria-hidden="true"></i></div>
                               <div class="col align-middle">
                                   <span class="align-middle">Out of Stock Items</span>
                               </div>
                               <div class="col-auto text-right align-middle">
-                                  <span class="h4 align-middle font-weight-normal text-dark">60</span>
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $outofstock_item['items']; ?></span>
                               </div>
                           </div>
-                      </a>
+                        </div>
                     </div>
                 </div> <!-- end of card body-->
               </div>
@@ -277,29 +270,107 @@ $user = new User;
 
                 <div class="card-body p-0">
                     <div class="d-block border border-top-0 border-left-0 border-right-0">
-                      <a href="https://site4.ec-cube.net/admin/order?order_status_id=1" class="p-3 d-block">
+                      <div class="p-3 d-block">
+                          <div class="row align-items-center">
+                              <div class="col align-middle">
+                                  <span class="align-middle">Waiting for Payment</span>
+                              </div>
+                              <div class="col-auto text-right align-middle">
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $waiting_for_payemnt['count']; ?></span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="d-block border border-top-0 border-left-0 border-right-0">
+                      <div class="p-3 d-block">
                           <div class="row align-items-center">
                               <div class="col align-middle">
                                   <span class="align-middle">Received Payment</span>
                               </div>
                               <div class="col-auto text-right align-middle">
-                                  <span class="h4 align-middle font-weight-normal text-dark">61</span>
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $received_payment['count']; ?></span>
                               </div>
                           </div>
-                      </a>
+                      </div>
                     </div>
 
                     <div class="d-block border border-top-0 border-left-0 border-right-0">
-                      <a href="https://site4.ec-cube.net/admin/order?order_status_id=6" class="p-3 d-block">
+                      <div class="p-3 d-block">
                           <div class="row align-items-center">
                               <div class="col align-middle">
-                                  <span class="align-middle">In Progress</span>
+                                  <span class="align-middle">In Transit</span>
                               </div>
                               <div class="col-auto text-right align-middle">
-                                  <span class="h4 align-middle font-weight-normal text-dark">60</span>
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $in_transit['count']; ?></span>
                               </div>
                           </div>
-                      </a>
+                      </div>
+                    </div>
+
+                    <div class="d-block border border-top-0 border-left-0 border-right-0">
+                      <div class="p-3 d-block">
+                          <div class="row align-items-center">
+                              <div class="col align-middle">
+                                  <span class="align-middle">Waiting for Receiving</span>
+                              </div>
+                              <div class="col-auto text-right align-middle">
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $waiting_for_receiving['count']; ?></span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="d-block border border-top-0 border-left-0 border-right-0">
+                      <div class="p-3 d-block">
+                          <div class="row align-items-center">
+                              <div class="col align-middle">
+                                  <span class="align-middle">Request for Return</span>
+                              </div>
+                              <div class="col-auto text-right align-middle">
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $request_for_return['count']; ?></span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="d-block border border-top-0 border-left-0 border-right-0">
+                      <div class="p-3 d-block">
+                          <div class="row align-items-center">
+                              <div class="col align-middle">
+                                  <span class="align-middle">Waiting for Return</span>
+                              </div>
+                              <div class="col-auto text-right align-middle">
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $waiting_for_return['count']; ?></span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="d-block border border-top-0 border-left-0 border-right-0">
+                      <div class="p-3 d-block">
+                          <div class="row align-items-center">
+                              <div class="col align-middle">
+                                  <span class="align-middle">Returning</span>
+                              </div>
+                              <div class="col-auto text-right align-middle">
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $count_returning['count']; ?></span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="d-block border border-top-0 border-left-0 border-right-0">
+                      <div class="p-3 d-block">
+                          <div class="row align-items-center">
+                              <div class="col align-middle">
+                                  <span class="align-middle">No Item Received</span>
+                              </div>
+                              <div class="col-auto text-right align-middle">
+                                  <span class="h4 align-middle font-weight-normal text-dark"><?php echo $count_no_item_received['count']; ?></span>
+                              </div>
+                          </div>
+                      </div>
                     </div>
                 </div> <!-- end of card body-->
               </div>

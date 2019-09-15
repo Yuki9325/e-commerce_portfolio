@@ -1,6 +1,8 @@
 <?php
 include_once("header.php");
 
+$address = $user->show_address($_SESSION['id']);
+
 require_once "../classes/Shop.php";
 $shop = new Shop;
 $show_cart = $shop->show_cart($_SESSION['id']);
@@ -95,9 +97,21 @@ $delivery_fee = $shop->cal_shipping($_SESSION['id']);
 						<span class="col-md-6" style="font-size:20px;"><?php echo '¥ '.number_format($cartitem_price+$delivery_fee); ?></span>
 					</p>
 				</div>
-					<a href="checkout.php" name="proceed_order" class="form-control btn btn-block text-dark mb-3" style="border-radius:50px; border-color:#ff1aff; background-color:#e0e0eb;">
+					<?php
+						if($address == NULL) {
+					?>
+					<a href="profile.php" class="form-control btn btn-block text-dark mb-3" style="border-radius:50px; border-color:#ff1aff; background-color:#e0e0eb;">
+						Please register your address first
+					</a>
+					<?php
+						}else{
+					?>
+					<a href="address.php" class="form-control btn btn-block text-dark mb-3" style="border-radius:50px; border-color:#ff1aff; background-color:#e0e0eb;">
 						Proceed to Checkout
 					</a>
+					<?php
+						}
+					?>
 			</div>
 		</div>
 	</div>

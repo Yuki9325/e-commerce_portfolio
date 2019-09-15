@@ -31,7 +31,7 @@ $show_fav = $shop->show_fav($_SESSION['id']);
                         <?php echo "<img src='../admin/item/".$row["item_photo"]."' alt='item_photo' width='150' height='150'>"; ?>
                     </a>
                 </td>
-                <td><?php echo $row['item_name']; ?><br><?php echo $row['item_price']; ?></td>
+                <td><?php echo $row['item_name']; ?><br><?php echo '¥ '.number_format($row['item_price']); ?></td>
                 <td class="text-center">
                     <form action="action.php?action=DELETE_FAV&from=FAV_LIST&id=<?php echo $row['item_id']; ?>" method="POST">
 						<button type="submit" name="delete_fav" class="btn btn-block text-dark"><i class="fa fa-times" aria-hidden="true"></i></button>

@@ -23,7 +23,7 @@ class Shop extends Item {
     }
 
     public function add_fav($user_id, $item_id) {
-        $sql = "SELECT * FROM fav_lists WHERE item_id = '$item_id'";
+        $sql = "SELECT * FROM fav_lists WHERE user_id = '$user_id' AND item_id = '$item_id'";
         $result = $this->conn->query($sql);
 
         if($result->num_rows == 0) {
@@ -202,7 +202,7 @@ class Shop extends Item {
     }
 
     public function cal_shipping($id) {
-        $sql = "SELECT ua_area FROM user_addresses WHERE user_id = '$id'";
+        $sql = "SELECT ua_area FROM user_addresses WHERE ua_id = '$id'";
         $result = $this->conn->query($sql);
         $area = $result->fetch_assoc();
 
@@ -225,7 +225,7 @@ class Shop extends Item {
                 }
     }
 
-    public function checkout($user_id, $ua_id, $cart_id, $payment_id, $credit_f_name, $credit_l_name, $credit_c_number, $credit_exp_month, $credit_exp_year, $credit_security, $purchased_price, $purchased_date) {
+    public function checkout($user_id, $ua_id, $cart_id, $payment_id, $purchased_price, $purchased_date) {
         $sql = "INSERT INTO checkouts (cart_id, ua_id, payment_id, purchased_price, purchased_date)
                 VALUES ('$cart_id', '$ua_id', '$payment_id', '$purchased_price', '$purchased_date')";
         $result = $this->conn->query($sql);
@@ -233,26 +233,22 @@ class Shop extends Item {
         if($result == TRUE) {
 
             if($payment_id == 4) {
-                $sql = "INSERT INTO credit_cards (user_id, credit_f_name, credit_l_name, credit_c_number, credit_exp_month, credit_exp_year, credit_security)
-                        VALUES('$user_id', '$credit_f_name', '$credit_l_name', '$credit_c_number', '$credit_exp_month', '$credit_exp_year', '$credit_security')";
-                $result = $this->conn->query($sql);
-
                 $sql = "UPDATE checkouts SET checkout_status = 'confirmed' WHERE payment_id = '$payment_id'";
                 $result = $this->conn->query($sql);
 
                 $this->change_stock($cart_id);
 
-                        if($result == TRUE) {
-                            $sql = "UPDATE carts SET cart_status = 'closed' WHERE cart_id = '$cart_id'";
-                            $result = $this->conn->query($sql);
+                    if($result == TRUE) {
+                        $sql = "UPDATE carts SET cart_status = 'closed' WHERE cart_id = '$cart_id'";
+                        $result = $this->conn->query($sql);
 
-                            if($result == TRUE) {
-                                $this->redirect("thankyou.php");
-                            } else {
-                                echo "ERROR: " . $this->conn->error;
-                                exit;
-                            }
+                        if($result == TRUE) {
+                            $this->redirect("thankyou.php");
+                        } else {
+                            echo "ERROR: " . $this->conn->error;
+                            exit;
                         }
+                    }
             }else {
                 $sql = "UPDATE checkouts SET checkout_status = 'pending' WHERE payment_id = '$payment_id'";
                 $result = $this->conn->query($sql);

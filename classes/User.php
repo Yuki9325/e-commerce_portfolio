@@ -52,6 +52,13 @@ class User extends Config {
         return $row;
     }
 
+    public function count_user() {
+        $sql = "SELECT COUNT(*) AS users FROM users WHERE status != 'D'";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
     public function show_address($id) {
         $sql = "SELECT * FROM users
                 INNER JOIN user_addresses ON users.user_id = user_addresses.user_id
@@ -59,6 +66,54 @@ class User extends Config {
         $result = $this->conn->query($sql);
         $row = $result->fetch_assoc();
         return $row;
+    }
+
+    public function show_chose_address($id) {
+        $sql = "SELECT * FROM user_addresses
+                WHERE ua_id = '$id'";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
+    public function choose_address($id) {
+        $sql = "SELECT * FROM user_addresses
+                WHERE user_id = '$id'";
+        $result = $this->conn->query($sql);
+       
+        if($result->num_rows > 0) {
+            $rows = array();
+            while($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+            return $rows;
+        } else {
+            return false;
+        } if($result == FALSE) {
+            echo "ERROR: " . $this->conn->error;
+        }
+        $this->conn->close();
+    }
+    
+    public function add_diff_address($id, $user_name, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip, $ua_status){
+        // $sql = "SELECT * FROM users JOIN user_addresses
+        //         ON user_addresses.user_id = users.user_id
+        //         WHERE users.user_id = '$id'";
+        // $result = $this->conn->query($sql);
+
+        $add_check = $this->address_check($id);
+        if($add_check->num_rows == TRUE) {         
+                $sql = "INSERT INTO user_addresses (user_id, ua_first_name, ua_last_name, ua_phone_number, ua_address, ua_city, ua_prefecture, ua_area, ua_zip, ua_status)
+                        VALUES ('$id', '$user_name[0]', '$user_name[1]', '$ua_phone_number', '$ua_address', '$ua_city', '$ua_prefecture', '$ua_area', '$ua_zip', '$ua_status')";
+                $result = $this->conn->query($sql);
+
+                if($result == TRUE){
+                    $this->redirect("address.php");
+                } else {
+                    echo "ERROR: " . $this->conn->error;
+                    exit;
+                }
+        }
     }
 
     public function add($first_name, $last_name, $email, $password, $repeatpassword, $permission) {
@@ -117,7 +172,7 @@ class User extends Config {
 
         $add_check = $this->address_check($id);
         if($add_check->num_rows == 0){
-            $this->create_address($id, $ua_phone_number, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip);
+            $this->create_address($id, $user_name, $ua_phone_number, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip);
         }
             if($result->num_rows == 0 AND $result_email->num_rows == 0) {
                 $sql = "UPDATE users SET users.first_name = '$user_name[0]',
@@ -126,7 +181,7 @@ class User extends Config {
                 $result = $this->conn->query($sql);
 
                     if($result == TRUE) {
-                        $this->edit_address($id,$ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip);
+                        $this->edit_address($id, $user_name, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip);
 
                     } else {
                         echo "ERROR: " . $this->conn->error;
@@ -141,13 +196,12 @@ class User extends Config {
         $sql = "SELECT * FROM user_addresses WHERE user_id = '$id'";
         $result = $this->conn->query($sql);
         return $result;
-  
     }
 
-    public function create_address($id, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip){
-        $sql = "INSERT INTO user_addresses (user_id, ua_phone_number, ua_address, 
+    public function create_address($id, $user_name, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip){
+        $sql = "INSERT INTO user_addresses (user_id, ua_first_name, ua_last_name, ua_phone_number, ua_address, 
                 ua_city, ua_prefecture, ua_area, ua_zip)
-                VALUES ('$id', '$ua_phone_number', '$ua_address', '$ua_city', '$ua_prefecture', '$ua_area', '$ua_zip')";
+                VALUES ('$id', '$user_name[0]', '$user_name[1]', '$ua_phone_number', '$ua_address', '$ua_city', '$ua_prefecture', '$ua_area', '$ua_zip')";
         $result = $this->conn->query($sql);
 
         if($result == TRUE) {
@@ -171,9 +225,9 @@ class User extends Config {
         }
     }
 
-    public function edit_address($id,$ua_phone_number,$ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip){
+    public function edit_address($id, $user_name, $ua_phone_number,$ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip){
         $sql = "UPDATE user_addresses 
-                SET ua_phone_number = '$ua_phone_number', ua_address = '$ua_address', ua_city = '$ua_city',
+                SET ua_first_name = '$user_name[0]', ua_last_name = '$user_name[1]', ua_phone_number = '$ua_phone_number', ua_address = '$ua_address', ua_city = '$ua_city',
                 ua_prefecture = '$ua_prefecture', ua_area = '$ua_area', ua_zip = '$ua_zip'
                 WHERE ua_status = 'default' AND user_id = '$id'";
         $result = $this->conn->query($sql);
@@ -217,5 +271,20 @@ class User extends Config {
             exit;
         }
         $this->conn->close();
+    }
+
+    public function register_payment($user_id, $ua_id, $payment_id, $credit_f_name, $credit_l_name, $credit_c_number, $credit_exp_month, $credit_exp_year, $credit_security) {
+        $sql = "INSERT INTO credit_cards (user_id, credit_f_name, credit_l_name, credit_c_number, credit_exp_month, credit_exp_year, credit_security)
+                VALUES ('$user_id', '$credit_f_name', '$credit_l_name', '$credit_c_number', '$credit_exp_month', '$credit_exp_year', '$credit_security')";
+                $result = $this->conn->query($sql);
+
+                if($result == TRUE) {
+                    
+                    $this->redirect("checkout.php?ua_id=".$ua_id."&payment_id=".$payment_id);
+                } else {
+                    echo "ERROR: " . $this->conn->error;
+                    exit;
+                }
+                $this->conn->close();
     }
 }

@@ -30,15 +30,15 @@ $address = $user->show_address($_SESSION['id']);
                 </div>
                 <div class="form-group">
                     <label style="font-size:20px;">Default Address</label>
-                        <div class="">
+                        <div class="pb-3">
                             <label class="m-0">Street Address</label>
-                            <input type="text" name="ua_address" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_address']; ?>" required>
+                            <input type="text" name="ua_address" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_address']; ?>">
                             
                             <label class="m-0">City</label>
-                            <input type="text" name="ua_city" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_city']; ?>" required>
+                            <input type="text" name="ua_city" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_city']; ?>">
                             
                             <label class="m-0">Prefecture</label>
-                            <input type="text" name="ua_prefecture" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_prefecture']; ?>" required>
+                            <input type="text" name="ua_prefecture" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_prefecture']; ?>">
                             
                             <div class="form-group">
                             <label class="m-0">Delivery Area</label>
@@ -51,12 +51,13 @@ $address = $user->show_address($_SESSION['id']);
                               </select>
                                 <p class="text-danger">To know the shipping fee, please see the cart calculation.</p>
                             </div>
+
                             <label class="m-0">Zip Code</label>
-                            <input type="text" name="ua_zip" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_zip']; ?>" required>
+                            <input type="text" name="ua_zip" class="mb-3 col-md-5 form-control" value="<?php echo $address['ua_zip']; ?>">
                         </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" name="edit" class="btn btn-block text-white mt-5" style="background-color:#ff1aff;">Update</button>
+                    <button type="submit" name="edit" class="form-control btn btn-lg btn-block text-dark" style="height:100%; border-radius:50px; border-color:#ff1aff; background-color:#ff1aff;">Update</button>
                 </div>
             </form>
         </div>

@@ -25,20 +25,29 @@ $check_fav = $shop->check_fav($_SESSION['id'], $id);
             <h3 class="text-left mb-3"><?php echo '¥ '.number_format($item['item_price']); ?></h3>
 
             <div class="form-group col-md-6 mb-5 text-left pl-0">
+              <?php if($item['item_qty'] == TRUE) {
+              ?>
             <p class="">Quantity: 
 
               <select name="item_qty" id="quantity" class="form-control">
                   <?php
-                    for($count = 1; $count <= $item['item_qty']; $count++){
+                      for($count = 1; $count <= $item['item_qty']; $count++){
                   ?>
                   <option value="<?php echo $count; ?>"><?php echo $count;?>
                   </option>
                   <?php
-                    }
+                      }
                   ?>
               </select>
-
-
+                  <?php
+                    }else{
+                  ?>
+                  <h3 class="text-danger">
+                    OUT OF STOCK
+                    </h3>
+                  <?php
+                    }
+                  ?>
             </p>
             </div>
 
@@ -65,6 +74,9 @@ $check_fav = $shop->check_fav($_SESSION['id'], $id);
                 }
               ?>
 
+              <?php
+                if($item['item_qty'] == TRUE) {
+              ?>
               <div class="form-group text-center ml-3">
               <form action="action.php?action=ADD_CART&id=<?php echo $id; ?>" method="POST">
                 <input type="hidden" name="item_qty" id="get_qty" min="1" max="<?php echo $item['item_qty']; ?>" value="1">
@@ -76,6 +88,23 @@ $check_fav = $shop->check_fav($_SESSION['id'], $id);
                 </a>
               </form>
               </div>
+            <?php
+              } else {
+            ?>
+              <div class="form-group text-center ml-3">
+              <form action="action.php?action=ここに何か入れる&id=<?php echo $id; ?>" method="POST">
+                <input type="hidden" name="item_qty" id="get_qty" min="1" max="<?php echo $item['item_qty']; ?>" value="1">
+                <a href="cart.php?id=<?php echo $id; ?>" style="text-decoration:none;">
+                  <button type="submit" name="add_cart" class="p-3" style="border-radius:50px; border-color:#ff1aff; background-color:#e0e0eb;">
+                  <i class="fa fa-bell-o" style="color:#ff1aff;" aria-hidden="true"></i>
+                    Alert me when you restock
+                  </button>
+                </a>
+              </form>
+              </div>
+            <?php
+              }
+            ?>
             </div>
             
             <div class="description">

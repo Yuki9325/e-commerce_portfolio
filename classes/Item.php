@@ -24,6 +24,20 @@ class Item extends Config {
         $this->conn->close();
     }
 
+    public function count_instock_item() {
+        $sql = "SELECT COUNT(*) AS items FROM items WHERE item_qty != '0'";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
+    public function count_outofstock_item() {
+        $sql = "SELECT COUNT(*) AS items FROM items WHERE item_qty = '0'";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return $row; 
+    }
+
     public function show_by_category($category) {
         $sql = "SELECT * FROM items 
                 JOIN categories ON items.category_id = categories.category_id

@@ -2,10 +2,12 @@
 session_start();
 require_once "../classes/User.php";
 require_once "../classes/Shop.php";
+require_once "../classes/Order.php";
 
 $action = $_GET['action'];
 $user = new User;
 $shop = new Shop;
+$order = new Order;
 
 //profile
 if($action == "EDIT" AND isset($_POST['edit'])){
@@ -37,11 +39,11 @@ if($action == "EDIT" AND isset($_POST['edit'])){
     $ua_prefecture = $_POST['ua_prefecture'];
     $ua_area = $_POST['ua_area'];
     $ua_zip = $_POST['ua_zip'];
-    if($ua_area != 0){
-        $user->edit_profile($id, $user_name, $email, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip);
-    } else {
-        $_SESSION['error'] = "Make sure all the fields are filled.";
+    if($ua_area == "0"){
+        $_SESSION['error'] = "Make sure you select the Delivery Area.";
         $user->redirect("profile.php");
+    } else {
+        $user->edit_profile($id, $user_name, $email, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip);
     }
 }
 
@@ -112,25 +114,101 @@ if($action == "CHANGE_QTY") {
     $result = $shop->change_qty($qty, $ci_id, $item_id);
 }
 
+if($action == "REGISTER_PAYMENT" AND isset($_POST['register_payment'])) {
+    $payment_id = $_POST['payment_id'];
+    $user_id = $_SESSION['id'];
+    $ua_id = $_GET['ua_id'];
+
+    if($payment_id == 2) {
+        $user->redirect("checkout.php?ua_id=".$ua_id."&payment_id=".$payment_id);
+    }else{
+        $credit_f_name = $_POST['credit_f_name'];
+        $credit_l_name = $_POST['credit_l_name'];
+        $credit_c_number = $_POST['credit_c_number'];
+        $credit_exp_month = $_POST['credit_exp_month'];
+        $credit_exp_year = $_POST['credit_exp_year'];
+        $credit_security = $_POST['credit_security'];
+
+        $user->register_payment($user_id, $ua_id, $payment_id, $credit_f_name, $credit_l_name, $credit_c_number, $credit_exp_month, $credit_exp_year, $credit_security);
+    }
+}
 //checkout
 if($action == "CHECKOUT" AND isset($_POST['checkout'])) {
     $user_id = $_SESSION['id'];
     $ua_id = $_GET['ua_id'];
     $cart_id = $_GET['cart_id'];
-    $payment_id = $_POST['payment_id'];
-    //credit card info
-    $credit_f_name = $_POST['credit_f_name'];
-    $credit_l_name = $_POST['credit_l_name'];
-    $credit_c_number = $_POST['credit_c_number'];
-    $credit_exp_month = $_POST['credit_exp_month'];
-    $credit_exp_year = $_POST['credit_exp_year'];
-    $credit_security = $_POST['credit_security'];
-    $purchased_price = $_POST['cartitem_price'];
+    $payment_id = $_GET['payment_id'];
+    $purchased_price = $_POST['purchased_price'];
     $purchased_date = date('Y-m-d');
 
-    $shop->checkout($user_id, $ua_id, $cart_id, $payment_id, $credit_f_name, $credit_l_name, $credit_c_number, $credit_exp_month, $credit_exp_year, $credit_security, $purchased_price, $purchased_date);
+    $shop->checkout($user_id, $ua_id, $cart_id, $payment_id, $purchased_price, $purchased_date);
+}
 
-    // if($result == TRUE AND $payment_id == 1) {
+if($action == "ADD_DIFF_ADDRESS" AND isset($_POST['add_diff_address'])){
+    function split_name($name){
+        $name = str_replace('　', ' ', $name);
+        $name = trim($name);
+        $name = preg_replace('/\s+/', ' ', $name);
+        $name = explode(' ',$name);
+    
+        $first_name = $last_name = null;
+    
+        if(!empty($name[0])){
+            $first_name = $name[0];
+        }
+    
+        if(!empty($name[1])){
+            $last_name = $name[1];
+        }
+    
+        return [$first_name, $last_name];
+    }
 
-    // }
+    $id = $_SESSION['id'];
+    $user_name = split_name(trim($_POST['user_name']));
+    $ua_phone_number = $_POST['ua_phone_number'];
+    $ua_address = $_POST['ua_address'];
+    $ua_city = $_POST['ua_city'];
+    $ua_prefecture = $_POST['ua_prefecture'];
+    $ua_area = $_POST['ua_area'];
+    $ua_zip = $_POST['ua_zip'];
+    $ua_status = 'additional';
+  
+    if($ua_area == "0"){
+        $_SESSION['error'] = "Make sure you select the Delivery Area.";
+        $user->redirect("diff_address.php");
+    } else {
+        $user->add_diff_address($id, $user_name, $ua_phone_number, $ua_address, $ua_city, $ua_prefecture, $ua_area, $ua_zip, $ua_status);
+    }
+}
+
+//order history buttons
+if($action == "PAID" AND isset($_POST['paid'])){
+    $id = $_GET['id'];
+
+    $order->confirm_the_payment($id);
+}
+
+if($action == "RECEIVED" AND isset($_POST['received'])){
+    $id = $_GET['id'];
+
+    $order->received($id);
+}
+
+if($action == "REQUEST_FOR_RETURN" AND isset($_POST['request_for_return'])){
+    $id = $_GET['id'];
+
+    $order->request_for_return($id);
+}
+
+if($action == "RETURNED_ITEM" AND isset($_POST['returned_item'])){
+    $id = $_GET['id'];
+
+    $order->returned_item($id);
+}
+
+if($action == "NO_ITEM_RECEIVED" AND isset($_POST['no_item_received'])){
+    $id = $_GET['id'];
+
+    $order->no_item_received($id);
 }

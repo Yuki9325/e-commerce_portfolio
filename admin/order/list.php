@@ -1,9 +1,13 @@
 <?php
 
-require_once "../../Classes/Order.php";
-$order = new Order;
-
 include_once ("../header.php");
+
+require_once "../../classes/User.php";
+$user = new User;
+$address = $user->show_address($_SESSION['id']);
+
+require_once "../../classes/Order.php";
+$order = new Order;
 
 ?>
 
@@ -77,31 +81,25 @@ include_once ("../header.php");
                   <strong>In Transit</strong></div>
 
               <?php
-                }elseif($row['checkout_status'] == 'delivered') {
-              ?>
-                <div class="border border-success text-success text-center" style="padding:10px; margin-bottom:10px; border-radius:10px;">
-                  <strong>Waiting for Receiving</strong></div>
-
-              <?php
                 }elseif($row['checkout_status'] == 'received') {
               ?>
                 <div class="border border-secondary text-secondary text-center" style="padding:10px; margin-bottom:10px; border-radius:10px;">
                   <strong>Closed</strong></div>
 
               <?php
-                }elseif($row['checkout_status'] == 'request_return') {
+                }elseif($row['checkout_status'] == 'request for return') {
               ?>
                 <div class="border border-danger text-danger text-center" style="padding:10px; margin-bottom:10px; border-radius:10px;">
                   <strong>Request for Return</strong></div>
 
               <?php
-              }elseif($row['checkout_status'] == 'accept_return') {
+              }elseif($row['checkout_status'] == 'accept return') {
               ?>
                 <div class="border border-success text-success text-center" style="padding:10px; margin-bottom:10px; border-radius:10px;">
                   <strong>Waiting for Return</strong></div>
 
               <?php
-              }elseif($row['checkout_status'] == 'return_item') {
+              }elseif($row['checkout_status'] == 'returning') {
               ?>
                 <div class="border border-success text-success text-center" style="padding:10px; margin-bottom:10px; border-radius:10px;">
                   <strong>Returning</strong></div>
@@ -113,7 +111,7 @@ include_once ("../header.php");
                   <strong>Returned</strong></div>
 
               <?php
-              }elseif($row['checkout_status'] == 'no_item_received') {
+              }elseif($row['checkout_status'] == 'no item received') {
               ?>
               <div class="border border-danger text-danger text-center" style="padding:10px; margin-bottom:10px; border-radius:10px;">
                 <strong>No Item Received</strong></div>
@@ -130,60 +128,119 @@ include_once ("../header.php");
             <td><?php echo $row['first_name']." ".$row['last_name']; ?></td>
             <td><?php echo $row['cart_id']; ?></td>
             <td><?php echo $row['payment_name']; ?></td>
-            <td><?php echo  $total = $order->get_total_price($row['cart_id']); ?></td>
+            <td><?php echo '¥ '.number_format($total = $order->get_total_price($row['cart_id'])); ?></td>
             <td><?php echo $row['purchased_date']; ?></td>
             <td><?php echo $row['shipped_date']; ?></td>
             <td><?php echo $address; ?></td>
-            <td><?php echo "<a href='order_details.php?id=".$row['user_id']."' class='btn btn-secondary bg-white text-body'>Details</i></a>"; ?></td>
+            <td><?php echo "<a href='order_details.php?id=".$row['cart_id']."' class='btn btn-secondary bg-white text-body'>Details</i></a>"; ?></td>
 
               <?php
                 if($row['checkout_status'] == 'pending'){
               ?>
-                <td class="text-center">
-                  <form action="action.php?action=C_T_PAYMENT&id=<?php echo $row['checkout_id']; ?>" method="POST">
-                    <button type="submit" name="c_t_payment" class="btn btn-success text-white">
-                        Confirm the Payment
-                    </button>
-                </form>
+                <td>
+                  <?php echo ""; ?>
                 </td>
               <?php
                 }
               elseif($row['checkout_status'] == 'confirmed') {
               ?>
-
               <td class="">
                 <div class="row">
                   <div class="col-5">
                   <form action="action.php?action=SHIPPED&id=<?php echo $row['checkout_id']; ?>" method="POST">
-                  <button type="submit" name="shipped" class="btn btn-primary text-white">
-                      Ship
-                  </button>
-                </form>
+                    <button type="submit" name="shipped" class="btn btn-primary text-white">
+                        Ship
+                    </button>
+                  </form>
 
                   </div>
                   <div class="col-5 mr-2">
                   <form action="action.php?action=CANCELLED&id=<?php echo $row['checkout_id']; ?>" method="POST">
-                  <button type="button" name="cancelled" class="btn btn-danger text-white">
-                      Cancel
-                  </button>
-                </form>
+                    <button type="submit" name="cancelled" class="btn btn-danger text-white">
+                        Cancel
+                    </button>
+                  </form>
                   </div>
                 </div>
               </td>
               <?php
-              }else{
+              }
+              elseif($row['checkout_status'] == 'shipped'){
               ?>
-              <td>
+              <td class="text-center">
                 <?php echo ""; ?>
               </td>
-          </tr>
-          <?php
+              <?php
               }
-            }
-          } else {
-            echo "<td colspan='7' class='text-center'>No Order</td>";
-          }
-          ?>
+              elseif($row['checkout_status'] == 'delivered'){
+                ?>
+                <td class="text-center">
+                  <?php echo ""; ?>
+                </td>
+              <?php
+              }
+              elseif($row['checkout_status'] == 'request for return'){
+                ?>
+                <td class="text-center">
+                  <form action="action.php?action=ACCEPT_RETURN&id=<?php echo $row['checkout_id']; ?>" method="POST">
+                    <button type="submit" name="accept_return" class="btn btn-secondary text-white">
+                        Accept Return
+                    </button>
+                  </form>
+                </td>
+              <?php
+              }
+              elseif($row['checkout_status'] == 'waiting for return'){
+              ?>
+                <td>
+                  <?php echo ""; ?>
+                </td>
+              <?php
+              }
+              elseif($row['checkout_status'] == 'returning'){
+              ?>
+                <td class="text-center">
+                  <form action="action.php?action=RECEIVED_AND_REFUND&id=<?php echo $row['checkout_id']; ?>" method="POST">
+                    <button type="submit" name="received_and_refund" class="btn btn-secondary text-white">
+                        Received & Refund
+                    </button>
+                  </form>
+                </td>
+              <?php
+              }
+              elseif($row['checkout_status'] == 'returned') {
+              ?>
+                <td>
+                  <?php echo ""; ?>
+                </td>
+              <?php
+              }
+              elseif($row['checkout_status'] == 'no item received') {
+              ?>
+                <td class="text-center">
+                  <form action="action.php?action=CONFIRMED_AND_REFUND&id=<?php echo $row['checkout_id']; ?>" method="POST">
+                    <button type="submit" name="confirmed_and_refund" class="btn btn-secondary text-white">
+                        Confirmed & Refund
+                    </button>
+                  </form>
+                </td>
+
+              <?php
+              }
+              elseif($row['checkout_status'] == 'cancelled') {
+              ?>
+                <td>
+                  <?php echo ""; ?>
+               </td>
+              <?php
+              }
+                  }
+                }
+               else {
+                echo "<td colspan='7' class='text-center'>No Order</td>";
+              }
+              ?>
+          </tr>
         </tbody>
       </table>
     </div>
