@@ -1,7 +1,5 @@
 <?php
 
-echo "sorry";
-
 include_once("header.php"); 
 
 require_once "../classes/Order.php";
