@@ -1,4 +1,6 @@
 <?php
+
+echo "hi";
 session_start();
 $_SESSION['user'];
 
