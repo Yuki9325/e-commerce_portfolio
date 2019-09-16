@@ -1,6 +1,6 @@
 <?php
 
-echo "hi";
+echo "yayyy";
 
 include_once("header.php"); 
 
