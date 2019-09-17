@@ -1,9 +1,5 @@
 <?php
 
-<<<<<<< HEAD
-echo "hi";
-=======
->>>>>>> 8040cb4ac6913058ea68d17a51b5e1e11f91a7bc
 session_start();
 $_SESSION['user'];
 
